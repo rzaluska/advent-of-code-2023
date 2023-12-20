@@ -85,6 +85,20 @@ func parseGame(input string) *Game {
 	game.Subsets = parseSubsets(parts[1])
 	return game
 }
+func mimimumPossibleSubset(g *Game) (result Subset) {
+	for _, subset := range g.Subsets {
+		if subset.Red > result.Red {
+			result.Red = subset.Red
+		}
+		if subset.Blue > result.Blue {
+			result.Blue = subset.Blue
+		}
+		if subset.Green > result.Green {
+			result.Green = subset.Green
+		}
+	}
+	return
+}
 
 func gamePossible(g *Game) bool {
 	for _, subset := range g.Subsets {
@@ -108,13 +122,16 @@ func main() {
 	}
 	scanner := bufio.NewScanner(file)
 	var sum int
+	var sum2 int
 	for scanner.Scan() {
 		line := scanner.Text()
 		game := parseGame(line)
 		if gamePossible(game) {
-			fmt.Printf("%+v\n", game)
 			sum += game.Id
 		}
-		fmt.Printf("%d\n", sum)
+		s := mimimumPossibleSubset(game)
+		sum2 += s.Blue * s.Red * s.Green
 	}
+	fmt.Printf("%d\n", sum)
+	fmt.Printf("%d\n", sum2)
 }
